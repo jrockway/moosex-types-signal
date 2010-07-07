@@ -16,16 +16,13 @@ use Test::Exception;
 
 my $test = Class->new;
 
-if($ENV{TEST_DEBUG}){
-    require Data::Dump::Streamer;
-    diag(Data::Dump::Streamer->new->Dump(
-        MooseX::Types::Signal::perl_signals(),
-        MooseX::Types::Signal::unix_signals(),
-    )->Names('$Perl', '$Unix')->Out);
-}
+# use DDS;
+# diag(Data::Dump::Streamer->new->Dump(
+#     MooseX::Types::Signal::perl_signals(),
+#     MooseX::Types::Signal::unix_signals(),
+# )->Names('$Perl', '$Unix')->Out);
 
-# ok, if your platform does not map SIGKILL to 9, then i hate it.
-
+# ok, so... if your platform does not map SIGKILL to 9, i hate it.
 lives_ok {
     $test->unix('KILL');
     $test->perl('KILL');
