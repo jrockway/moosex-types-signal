@@ -12,7 +12,7 @@ use Config qw(%Config);
 }
 
 # patch welcome.
-sub unix_signals {
+sub calc_unix_signals {
     my @keys = grep { eval { ${$_MXTS::Signals::{$_}} } }
                grep { /^SIG/i } keys %_MXTS::Signals::;
 
@@ -46,7 +46,7 @@ sub unix_signals {
     return $signals;
 }
 
-sub perl_signals {
+sub calc_perl_signals {
     my @numbers = split /\s+/, $Config{sig_num};
     my @names   = split /\s+/, $Config{sig_name};
 
@@ -58,6 +58,12 @@ sub perl_signals {
     }
     return \%result;
 }
+
+my $unix_signals = calc_unix_signals();
+my $perl_signals = calc_perl_signals();
+
+sub unix_signals { $unix_signals }
+sub perl_signals { $perl_signals }
 
 sub validate_unix_signal {
     my $sig = shift;
