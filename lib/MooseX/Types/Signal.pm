@@ -8,15 +8,27 @@ use Scalar::Util qw(looks_like_number);
 
 use Config qw(%Config);
 { package _MXTS::Signals;
-  use POSIX ':signal_h';
+  use POSIX 'signal_h';
+}
+
+sub get_unix_signal_number($) {
+    my $sig = shift;
+    # so apparently POSIX works differently on 5.8 vs. 5.10/5.12.
+    # fucking POSIX!
+
+    return eval {
+        my $glob = $_MXTS::Signals::{$sig};
+        ref $glob eq 'SCALAR' ? $$glob : $glob->();
+    };
 }
 
 # patch welcome.
 sub calc_unix_signals {
-    my @keys = grep { eval { ${$_MXTS::Signals::{$_}} } }
-               grep { /^SIG/i } keys %_MXTS::Signals::;
 
-    my $signals = { map { (uc $_) => ${$_MXTS::Signals::{$_}} } @keys };
+    my @keys = grep { get_unix_signal_number $_ }
+               grep { /^SIG[A-Za-z]/i } keys %_MXTS::Signals::;
+
+    my $signals = { map { (uc $_) => get_unix_signal_number $_ } @keys };
 
     my $sigrtmin = $signals->{SIGRTMIN};
     my $sigrtmax = $signals->{SIGRTMAX};

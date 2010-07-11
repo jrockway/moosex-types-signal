@@ -16,7 +16,7 @@ use Test::Exception;
 
 my $test = Class->new;
 
-# use DDS;
+# use Data::Dump::Streamer;
 # diag(Data::Dump::Streamer->new->Dump(
 #     MooseX::Types::Signal::perl_signals(),
 #     MooseX::Types::Signal::unix_signals(),
