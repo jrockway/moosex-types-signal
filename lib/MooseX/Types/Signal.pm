@@ -142,10 +142,6 @@ sub coerce_signal {
     return coerce_unix_signal($sig) || coerce_perl_signal($sig);
 }
 
-subtype Signal, as PerlSignal|UnixSignal,
-    where   { !validate_signal($_) },
-    message { validate_signal($_) };
-
 subtype UnixSignal, as Int,
     where { !validate_unix_signal($_) },
     message { validate_unix_signal($_) };
@@ -153,6 +149,10 @@ subtype UnixSignal, as Int,
 subtype PerlSignal, as Int,
     where { !validate_perl_signal($_) },
     message { validate_perl_signal($_) };
+
+subtype Signal, as PerlSignal|UnixSignal,
+    where   { !validate_signal($_) },
+    message { validate_signal($_) };
 
 coerce UnixSignal, from Str, via { coerce_unix_signal($_) };
 coerce PerlSignal, from Str, via { coerce_perl_signal($_) };
